@@ -890,7 +890,6 @@ arrPointer make_string(arrPointer AA, arrPointer WW, arrPointer HH)
 
 
 
-//scp -P 7022 -r Dll1.dll byungkeun@147.47.208.20:/home/byungkeun/PROGRAMS
 
 
 
