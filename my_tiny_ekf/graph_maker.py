@@ -1,10 +1,3 @@
-
-#  * MakeGraphUsingTinyEKFDLL
-#  *
-#  * Copyright (C) 2022 DukiChoi
-#  *
-#  * MIT License
-
 # -*- coding: utf-8 -*-
 from calendar import c
 from inspect import _void
@@ -20,16 +13,11 @@ import signal
 import threading
 import ctypes
 from ctypes import *
-import os
-#os.add_dll_directory(os.getcwd())
-os.environ['PATH'] = './lib.dll' + os.pathsep + os.environ['PATH']
-
-
-
 i = c_double(0)
 pi = pointer(i)
 x = []
 y = []
+
 z = []
 
 port = 'COM6'
@@ -109,7 +97,7 @@ if __name__ == "__main__":
     #pd array형태로  csv파일 읽어오기
     #####여기서 txt명과 데이터 개수를 적어주세요#####
     ##############################################
-    file_name = "circle_test2"
+    file_name = "circle_lowHz"
     ##############################################
 
 
@@ -136,15 +124,17 @@ if __name__ == "__main__":
     pointer_b = filter2.ctypes.data_as(ctypes.POINTER(ctypes.c_double*(data_amount*3)))
     filter3 = np.array(data_matrix3, dtype=np.float64)
     pointer_c = filter3.ctypes.data_as(ctypes.POINTER(ctypes.c_double*(data_amount*3)))
+    filter4 = np.array(data_matrix3, dtype=np.float64)
+    pointer_d = filter4.ctypes.data_as(ctypes.POINTER(ctypes.c_double*(data_amount*3)))
     
     #ctypes를 이용해서 dll 라이브러리의 함수에 9축 데이터를 3개의 array배열 입력 1개의 array배열 출력
     print("Dll function call")
     libc = ctypes.CDLL('./Dll_lib.dll')
-    #함수 입력 형식 900개 double값
-    libc.make_string.argtypes = {ctypes.POINTER(ctypes.c_double*(data_amount*3)), ctypes.POINTER(ctypes.c_double*(data_amount*3)), ctypes.POINTER(ctypes.c_double*(data_amount*3))}
+    #함수 입력 형식 1200개 double값
+    libc.make_string.argtypes = {ctypes.POINTER(ctypes.c_double*(data_amount*3)), ctypes.POINTER(ctypes.c_double*(data_amount*3)), ctypes.POINTER(ctypes.c_double*(data_amount*3)), ctypes.POINTER(ctypes.c_double*(data_amount*3))}
     #함수 출력 형식 300개 double값
     libc.make_string.restype = ctypes.POINTER(ctypes.c_double*(data_amount*3))
-    arrayptr = libc.make_string(pointer_a, pointer_b, pointer_c)
+    arrayptr = libc.make_string(pointer_a, pointer_b, pointer_c, pointer_d)
     c_array = [x for x in arrayptr.contents]
     print("S행렬 출력: ", len(c_array), "개 \n", c_array)
     
@@ -165,6 +155,7 @@ if __name__ == "__main__":
         elif idx%3 ==2:
             z.append(c)
         idx = idx + 1
+
     dataSet = np.array([x, y, z])
     #print(x)
     #print(y)

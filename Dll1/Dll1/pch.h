@@ -22,5 +22,5 @@
 #define imuBufSize 45
 typedef double(*arrPointer)[3];
 
-extern "C" MYMAIN_DECLSPEC arrPointer make_string(arrPointer AA, arrPointer WW, arrPointer HH);
+extern "C" MYMAIN_DECLSPEC arrPointer make_string(arrPointer AA, arrPointer WW, arrPointer HH, arrPointer An);
 

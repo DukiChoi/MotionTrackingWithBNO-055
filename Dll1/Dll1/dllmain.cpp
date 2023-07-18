@@ -1,7 +1,7 @@
-// dllmain.cpp : DLL 애플리케이션의 진입점을 정의합니다.
+﻿// dllmain.cpp : DLL 애플리케이션의 진입점을 정의합니다.
 #include "pch.h"
 
-
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.c
@@ -25,6 +25,8 @@
 
 //#include "TinyEKF.h"
 
+
+
 /*
  * TinyEKF: Extended Kalman Filter for Arduino and TeensyBoard.
  *
@@ -35,6 +37,16 @@
 
 
 
+ // Support both Arduino and command-line versions
+
+
+ /*
+  * TinyEKF: Extended Kalman Filter for embedded processors
+  *
+  * Copyright (C) 2015 Simon D. Levy
+  *
+  * MIT License
+  */
 
   /* Cholesky-decomposition matrix-inversion code, adapated from
      http://jean-pierre.moreau.pagesperso-orange.fr/Cplus/choles_cpp.txt */
@@ -588,7 +600,7 @@ public:
 double a[3], w[3], h[3];
 double pi, theta, psi = 0.0;
 double t = 0.01;
-double g = 9.81;
+double g = 9.806;
 double S_gps_x, S_gps_y, S_gps_z = 0.0;// initial location
 double V_x, V_y, V_z = 0.0; // initial velocity
 bool returns; // KF's return (T/F)
@@ -808,7 +820,7 @@ void quaternion_to_euler(double q0, double q1, double q2, double q3) {
 
 typedef double(*arrPointer)[3];
 
-arrPointer make_string(arrPointer AA, arrPointer WW, arrPointer HH)
+arrPointer make_string(arrPointer AA, arrPointer WW, arrPointer HH, arrPointer An)
 {
 
     IMUEKF ekf;
@@ -820,43 +832,78 @@ arrPointer make_string(arrPointer AA, arrPointer WW, arrPointer HH)
         a[1] = AA[i][1];
         a[2] = AA[i][2];
 
-        w[0] = WW[i][0];
-        w[1] = WW[i][1];
-        w[2] = WW[i][2];
+        w[0] = WW[i][0]/180*3.14;
+        w[1] = WW[i][1]/180*3.14;
+        w[2] = WW[i][2]/180*3.14;
 
         h[0] = HH[i][0];
         h[1] = HH[i][1];
         h[2] = HH[i][2];
 
+        pi = An[i][0];
+        theta = An[i][0];
+        psi = An[i][0];
+
+        //angular-drift compensation
+        if (abs(a[0]) < 0.01 / 180 * 3.14) {
+            a[0] = 0;
+        }
+        if (abs(a[1]) < 0.01 / 180 * 3.14) {
+            a[1] = 0;
+        }
+        if (abs(a[2]) < 0.01 / 180 * 3.14) {
+            a[2] = 0;
+        }
+
+        //h-drift compensation
+        if (abs(h[0]) < 0.01) {
+            h[0] = 0;
+        }
+        if (abs(h[1]) < 0.01) {
+            h[1] = 0;
+        }
+        if (abs(h[2]) < 0.01) {
+            h[2] = 0;
+        }
 
 
-        double FilterData[3] = { a[0], a[1], a[2] };
-        returns = ekf.step(FilterData);
+        //double FilterData[3] = { a[0], a[1], a[2] };
+        //returns = ekf.step(FilterData);
 
-        ekf2.setX(0, ekf.getX(0));
-        ekf2.setX(1, ekf.getX(1));
-        ekf2.setX(2, ekf.getX(2));
-        ekf2.setX(3, ekf.getX(3));
+        //ekf2.setX(0, ekf.getX(0));
+        //ekf2.setX(1, ekf.getX(1));
+        //ekf2.setX(2, ekf.getX(2));
+        //ekf2.setX(3, ekf.getX(3));
 
-        double FilterData2[3] = { h[0], h[1], h[2] };
-        returns = ekf2.step2(FilterData2);
+        //double FilterData2[3] = { h[0], h[1], h[2] };
+        //returns = ekf2.step2(FilterData2);
 
 
-        return_x[0] = ekf2.getX(0);
-        return_x[1] = ekf2.getX(1);
-        return_x[2] = ekf2.getX(2);
-        return_x[3] = ekf2.getX(3);
+        //return_x[0] = ekf2.getX(0);
+        //return_x[1] = ekf2.getX(1);
+        //return_x[2] = ekf2.getX(2);
+        //return_x[3] = ekf2.getX(3);
 
         // Update Roll, Pitch, Yaw by return x (quaternion)
-        quaternion_to_euler(return_x[0], return_x[1], return_x[2], return_x[3]);
+        // quaternion_to_euler(return_x[0], return_x[1], return_x[2], return_x[3]);
 
-        double acc_x = a[0] + w[1] * (V_z)-w[2] * (V_y)-g * sin(theta);
-        double acc_y = a[1] + w[0] * (V_z)+w[2] * (V_x)+g * sin(pi) * cos(theta);
-        double acc_z = a[2] + w[0] * (V_y)-w[1] * (V_x)+g * cos(pi) * cos(theta);
+        double acc_x = a[0];
+        double acc_y = a[1];
+        double acc_z = a[2]; 
 
         double acc_x_world = cos(theta) * cos(pi) * acc_x + cos(theta) * sin(pi) * acc_y - sin(theta) * acc_z;
         double acc_y_world = (sin(psi) * sin(theta) * cos(pi) - cos(psi) * sin(pi)) * acc_x + (sin(pi) * sin(theta) * sin(psi) + cos(pi) * cos(psi)) * acc_y + sin(psi) * cos(theta) * acc_z;
-        double acc_z_world = (cos(pi) * sin(theta) * cos(psi) + sin(pi) * sin(psi)) * acc_x + (cos(psi) * sin(theta) * sin(pi) - sin(psi) * cos(pi)) * acc_y + cos(psi) * cos(theta) * acc_z;
+        double acc_z_world = (cos(pi) * sin(theta) * cos(psi) + sin(pi) * sin(psi)) * acc_x + (cos(psi) * sin(theta) * sin(pi) - sin(psi) * cos(pi)) * acc_y + cos(psi) * cos(theta) * acc_z-g;
+
+
+        //V-drift compensation
+        double acc_sqrt = sqrt(pow(acc_x_world, 2) + pow(acc_y_world, 2) + pow(acc_z_world, 2));
+        if (acc_sqrt < 0.004) {
+            acc_x_world = 0;
+            acc_y_world = 0;
+            acc_z_world = 0;
+        }
+
 
         V_x = V_x + acc_x_world * t;
         V_y = V_y + acc_y_world * t;
@@ -890,6 +937,7 @@ arrPointer make_string(arrPointer AA, arrPointer WW, arrPointer HH)
 
 
 
+//scp -P 7022 -r Dll1.dll byungkeun@147.47.208.20:/home/byungkeun/PROGRAMS
 
 
 
