@@ -17,7 +17,6 @@ i = c_double(0)
 pi = pointer(i)
 x = []
 y = []
-
 z = []
 
 port = 'COM6'
@@ -97,7 +96,7 @@ if __name__ == "__main__":
     #pd array형태로  csv파일 읽어오기
     #####여기서 txt명과 데이터 개수를 적어주세요#####
     ##############################################
-    file_name = "circle_lowHz"
+    file_name = "letterL_50Hz"
     ##############################################
 
 
@@ -109,22 +108,23 @@ if __name__ == "__main__":
     new_df = pd.read_csv('./test_files/'+ file_name + '.csv')
     m = new_df.values
     #print(m)
-    data_matrix1 = m[0:data_amount, 3:6].astype(np.float64)
-    data_matrix2 = m[0:data_amount, 6:9].astype(np.float64)
-    data_matrix3 = m[0:data_amount, 13:16].astype(np.float64)
-    
-    print("입력값 A행렬:\n" , data_matrix1)
-    print("입력값 W행렬:\n" , data_matrix2)
-    print("입력값 H행렬:\n" , data_matrix3)
+    data_matrix_A = m[0:data_amount, 3:6].astype(np.float64)
+    data_matrix_W = m[0:data_amount, 6:9].astype(np.float64)
+    data_matrix_H = m[0:data_amount, 13:16].astype(np.float64)
+    data_matrix_Angle = m[0:data_amount, 9:12].astype(np.float64)
+    print("입력값 A행렬:\n" , data_matrix_A)
+    print("입력값 W행렬:\n" , data_matrix_W)
+    print("입력값 H행렬:\n" , data_matrix_H)
+    print("입력값 Angle행렬: \n", data_matrix_Angle)
 
     #입력 배열 포인터에 할당하기
-    filter1 = np.array(data_matrix1, dtype=np.float64)
+    filter1 = np.array(data_matrix_A, dtype=np.float64)
     pointer_a = filter1.ctypes.data_as(ctypes.POINTER(ctypes.c_double*(data_amount*3)))
-    filter2 = np.array(data_matrix2, dtype=np.float64)
+    filter2 = np.array(data_matrix_W, dtype=np.float64)
     pointer_b = filter2.ctypes.data_as(ctypes.POINTER(ctypes.c_double*(data_amount*3)))
-    filter3 = np.array(data_matrix3, dtype=np.float64)
+    filter3 = np.array(data_matrix_H, dtype=np.float64)
     pointer_c = filter3.ctypes.data_as(ctypes.POINTER(ctypes.c_double*(data_amount*3)))
-    filter4 = np.array(data_matrix3, dtype=np.float64)
+    filter4 = np.array(data_matrix_Angle, dtype=np.float64)
     pointer_d = filter4.ctypes.data_as(ctypes.POINTER(ctypes.c_double*(data_amount*3)))
     
     #ctypes를 이용해서 dll 라이브러리의 함수에 9축 데이터를 3개의 array배열 입력 1개의 array배열 출력
@@ -164,7 +164,8 @@ if __name__ == "__main__":
 
     # GET SOME MATPLOTLIB OBJECTS
     fig = plt.figure()
-    ax = Axes3D(fig)
+    ax = fig.add_subplot(projection='3d')
+    
     redDots = plt.plot(dataSet[0], dataSet[1], dataSet[2], lw=2, c='r', marker='o')[0]  # For scatter plot
     # NOTE: Can't pass empty arrays into 3d version of plot()
     line = plt.plot(dataSet[0], dataSet[1], dataSet[2], lw=2, c='g')[0]  # For line plot

@@ -840,20 +840,22 @@ arrPointer make_string(arrPointer AA, arrPointer WW, arrPointer HH, arrPointer A
         h[1] = HH[i][1];
         h[2] = HH[i][2];
 
+
+
+        //angular-drift compensation
+        if (abs(An[i][0]) < 0.01 / 180 * 3.14) {
+            An[i][0] = 0;
+        }
+        if (abs(An[i][1]) < 0.01 / 180 * 3.14) {
+            An[i][1] = 0;
+        }
+        if (abs(An[i][2]) < 0.01 / 180 * 3.14) {
+            An[i][2] = 0;
+        }
+
         pi = An[i][0];
         theta = An[i][0];
         psi = An[i][0];
-
-        //angular-drift compensation
-        if (abs(a[0]) < 0.01 / 180 * 3.14) {
-            a[0] = 0;
-        }
-        if (abs(a[1]) < 0.01 / 180 * 3.14) {
-            a[1] = 0;
-        }
-        if (abs(a[2]) < 0.01 / 180 * 3.14) {
-            a[2] = 0;
-        }
 
         //h-drift compensation
         if (abs(h[0]) < 0.01) {
@@ -891,9 +893,9 @@ arrPointer make_string(arrPointer AA, arrPointer WW, arrPointer HH, arrPointer A
         double acc_y = a[1];
         double acc_z = a[2]; 
 
-        double acc_x_world = cos(theta) * cos(pi) * acc_x + cos(theta) * sin(pi) * acc_y - sin(theta) * acc_z;
-        double acc_y_world = (sin(psi) * sin(theta) * cos(pi) - cos(psi) * sin(pi)) * acc_x + (sin(pi) * sin(theta) * sin(psi) + cos(pi) * cos(psi)) * acc_y + sin(psi) * cos(theta) * acc_z;
-        double acc_z_world = (cos(pi) * sin(theta) * cos(psi) + sin(pi) * sin(psi)) * acc_x + (cos(psi) * sin(theta) * sin(pi) - sin(psi) * cos(pi)) * acc_y + cos(psi) * cos(theta) * acc_z-g;
+        double acc_x_world = cos(theta) * cos(psi) * acc_x + (sin(pi) * sin(theta) * cos(psi) - cos(pi) * sin(psi)) * acc_y + (cos(pi) * sin(theta) * cos(psi) + sin(pi) * sin(psi)) * acc_z;
+        double acc_y_world = cos(theta) * sin(psi) * acc_x + (sin(pi) * sin(theta) * sin(psi) + cos(pi) * cos(psi)) * acc_y + (cos(pi) * sin(theta) * sin(psi) - sin(pi) * cos(psi)) * acc_z;
+        double acc_z_world = -sin(theta) * acc_x + sin(pi) * cos(theta) * acc_y + cos(pi) * cos(theta) * acc_z - 9.806;
 
 
         //V-drift compensation
