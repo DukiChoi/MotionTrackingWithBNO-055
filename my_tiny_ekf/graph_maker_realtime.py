@@ -27,7 +27,7 @@ z_val = []
 text = ""
 
 port = 'COM3'
-port = '/dev/cu.usbmodem1301'
+# port = '/dev/cu.usbmodem1301'
 baud = 115200
 ser = Serial(port,baud) 
 exitThread = False
@@ -52,7 +52,7 @@ def animate(i):
                 z_val.append(float(z))
                 plt.cla()
                 drawplots()
-                plt.plot(x_val[len(x_val)-11: len(x_val)-1], y_val[len(y_val)-11: len(y_val)-1], z_val[len(z_val)-11: len(z_val)-1], color = 'g', alpha = 0.5)
+                plt.plot(x_val[len(x_val)-11: len(x_val)-1], y_val[len(y_val)-11: len(y_val)-1], z_val[len(z_val)-11: len(z_val)-1], color = 'g', alpha = 0.9)
         else:
             text = res.decode()[:len(res)-1]
             print(text)
@@ -61,9 +61,9 @@ def drawplots():
     n = 3
     x = [-0.5, 0, 0.5]
     zero = np.zeros(n)
-    ax.plot(x, zero, zero, color = 'r', alpha = 0.5)
-    ax.plot(zero, x, zero, color = 'r', alpha = 0.5)
-    ax.plot(zero, zero, x, color = 'r', alpha = 0.5)
+    ax.plot(x, zero, zero, color = 'r', alpha = 0.9)
+    ax.plot(zero, x, zero, color = 'r', alpha = 0.9)
+    ax.plot(zero, zero, x, color = 'r', alpha = 0.9)
     
         
 if __name__ == "__main__":
@@ -75,9 +75,9 @@ if __name__ == "__main__":
     n = 3
     x = [-0.5, 0, 0.5]
     zero = np.zeros(n)
-    ax.plot(x, zero, zero, color = 'r', alpha = 0.5)
-    ax.plot(zero, x, zero, color = 'r', alpha = 0.5)
-    ax.plot(zero, zero, x, color = 'r', alpha = 0.5)
+    ax.plot(x, zero, zero, color = 'r', alpha = 0.9)
+    ax.plot(zero, x, zero, color = 'r', alpha = 0.9)
+    ax.plot(zero, zero, x, color = 'r', alpha = 0.9)
     # AXES PROPERTIES]
     ax.set_xlim3d([-0.5, 0.5])
     ax.set_ylim3d([-0.5, 0.5])
