@@ -29,6 +29,7 @@ exitThread = False
 # ANIMATION FUNCTION
 def func(num, dataSet, line, redDots):
     # NOTE: there is no .set_data() for 3 dim data...
+    x.append
     line.set_data(dataSet[0:2, :num])
     line.set_3d_properties(dataSet[2, :num])
     redDots.set_data(dataSet[0:2, :num])
@@ -180,7 +181,7 @@ if __name__ == "__main__":
     ax.set_title('Trajectory of electron for E vector along [120]')
 
     # Creating the Animation object
-    line_ani = animation.FuncAnimation(fig, func, frames=numDataPoints, fargs=(dataSet, line, redDots), interval=50,
+    line_ani = animation.FuncAnimation(fig, func, frames=numDataPoints, fargs=(line, redDots), interval=50,
                                        blit=False)
     # line_ani.save(r'Animation.mp4')
 
