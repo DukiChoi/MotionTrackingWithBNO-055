@@ -1,4 +1,4 @@
-# MakeGraphUsingTinyEKFDLL
+# MakeGraphUsingTinyEKFDLL + Motion Tracking With BNO-055
 
 This uses DLL with python ctypes module to draw a 3D graph.
 DLL is compiled by MS Visual Studio and the cpp file before the compilation includes the TinyEKF codes.
