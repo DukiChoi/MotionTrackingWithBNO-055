@@ -52,7 +52,25 @@ def animate(i):
                 z_val.append(float(z))
                 plt.cla()
                 drawplots()
-                plt.plot(x_val[len(x_val)-11: len(x_val)-1], y_val[len(y_val)-11: len(y_val)-1], z_val[len(z_val)-11: len(z_val)-1], color = 'g', alpha = 0.9)
+                plt.plot(x_val[len(x_val)-11: len(x_val)-1], y_val[len(y_val)-11: len(y_val)-1], z_val[len(z_val)-11: len(z_val)-1], color = 'g', alpha = 0.6)
+                
+                
+                
+                x1 = [x_val[len(x_val)-1], x_val[len(x_val)-1] + 0.1, x_val[len(x_val)-1] + 0.2]
+                x2 = [y_val[len(y_val)-1], y_val[len(y_val)-1], y_val[len(y_val)-1]]
+                x3 = [z_val[len(z_val)-1], z_val[len(z_val)-1], z_val[len(z_val)-1]]
+                y1 = [x_val[len(x_val)-1], x_val[len(x_val)-1], x_val[len(x_val)-1]]
+                y2 = [y_val[len(y_val)-1], y_val[len(y_val)-1] + 0.1, y_val[len(y_val)-1] + 0.2]
+                y3 = [z_val[len(z_val)-1], z_val[len(z_val)-1], z_val[len(z_val)-1]]
+                z1 = [x_val[len(x_val)-1], x_val[len(x_val)-1], x_val[len(x_val)-1]]
+                z2 = [y_val[len(y_val)-1], y_val[len(y_val)-1], y_val[len(y_val)-1]]
+                z3 = [z_val[len(z_val)-1], z_val[len(z_val)-1] + 0.1, z_val[len(z_val)-1] + 0.2]
+                
+                
+                plt.plot(x1,x2,x3, color = 'g')
+                plt.plot(y1,y2,y3, color = 'g')
+                plt.plot(z1,z2,z3 , color = 'g')
+                
         else:
             text = res.decode()[:len(res)-1]
             print(text)
@@ -72,9 +90,8 @@ if __name__ == "__main__":
     mplstyle.use('fast')
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, projection='3d')
-    n = 3
     x = [-0.5, 0, 0.5]
-    zero = np.zeros(n)
+    zero = np.zeros(3)
     ax.plot(x, zero, zero, color = 'r', alpha = 0.9)
     ax.plot(zero, x, zero, color = 'r', alpha = 0.9)
     ax.plot(zero, zero, x, color = 'r', alpha = 0.9)
