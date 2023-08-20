@@ -10,7 +10,8 @@ After the function call it gets an array s which is the position of the sensor, 
 
 
 Later I adopted Arduino and IMU sensors (BNO-055) to sense 9-axis data in real-time.  In the Arduino code I used a high-pass filter to remove the drift caused when calculating Velocity and Position.
-Another Python code(graph_maker_realtime.py) ables it to show the 3D graph in real-time.
+Another Python code(graph_maker_realtime.py) calculates the orientation getting the dot-product of the rotation matrix and the dots (3 dots are representing one axis, so there are 3 of (3,3) np arrays) that represent each axis(x,y,z).
+And it make it possible to show the 3D graph in real-time.
 ![Calibration](https://github.com/DukiChoi/MakeGraphUsingTinyEKFDLL/assets/77292270/716f9f78-cfb5-42b3-9f81-e4592cef6cef)
 ![Drawing Circle](https://github.com/DukiChoi/MakeGraphUsingTinyEKFDLL/assets/77292270/57d0deff-4fa4-40f8-95e2-6b4349eedd99)
 
