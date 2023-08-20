@@ -13,3 +13,6 @@ Later I adopted Arduino and IMU sensors (BNO-055) to sense 9-axis data in real-t
 Another Python code(graph_maker_realtime.py) ables it to show the 3D graph in real-time.
 ![Calibration](https://github.com/DukiChoi/MakeGraphUsingTinyEKFDLL/assets/77292270/716f9f78-cfb5-42b3-9f81-e4592cef6cef)
 ![Drawing Circle](https://github.com/DukiChoi/MakeGraphUsingTinyEKFDLL/assets/77292270/57d0deff-4fa4-40f8-95e2-6b4349eedd99)
+
+![Orientation and position](https://github.com/DukiChoi/MakeGraphUsingTinyEKFDLL/assets/77292270/4cb8e434-2782-4da7-b767-0f3524c3f8c8)
+
