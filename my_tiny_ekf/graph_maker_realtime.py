@@ -107,9 +107,9 @@ def drawplots():
     n = 3
     x = [-0.5, 0, 0.5]
     zero = np.zeros(n)
-    ax.plot(x, zero, zero, color = 'black', alpha = 0.7)
-    ax.plot(zero, x, zero, color = 'black', alpha = 0.7)
-    ax.plot(zero, zero, x, color = 'black', alpha = 0.7)
+    ax.plot(x, zero, zero, color = 'black', alpha = 0.6)
+    ax.plot(zero, x, zero, color = 'black', alpha = 0.6)
+    ax.plot(zero, zero, x, color = 'black', alpha = 0.6)
     ax.set_xlabel('X_axis')
     ax.set_ylabel('Y_axis')
     ax.set_zlabel('Z_axis')
