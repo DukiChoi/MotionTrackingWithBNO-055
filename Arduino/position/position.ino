@@ -131,7 +131,7 @@ void loop(void)
   
   // double acc_x_world = cos(high_theta) * cos(high_psi) * a[0] + (sin(high_pi) * sin(high_theta) * cos(high_psi) - cos(high_pi) * sin(high_psi)) * a[1] + (cos(high_pi) * sin(high_theta) * cos(high_psi) + sin(high_pi) * sin(high_psi)) * a[2];
   // double acc_y_world = cos(high_theta) * sin(high_psi) * a[0] + (sin(high_pi) * sin(high_theta) * sin(high_psi) + cos(high_pi) * cos(high_psi)) * a[1] + (cos(high_pi) * sin(high_theta) * sin(high_psi) - sin(high_pi) * cos(high_psi)) * a[2];
-  // double acc_z_world = -sin(high_theta) * a[0] + sin(high_pi) * cos(high_theta) * a[1] + cos(high_pi) * cos(high_theta) * a[2] - acc_magnitude;
+  // double acc_z_world = -sin(high_theta) * a[0] + sin(high_pi) * cos(high_theta) * a[1] + cos(high_pi) * cos(high_theta) * a[2]; //- acc_magnitude;
   
   // high_a[0] = highpassfilter(a_before[0], a[0], high_a[0]);
   // high_a[1] = highpassfilter(a_before[1], a[1], high_a[1]);
@@ -178,9 +178,10 @@ void loop(void)
   Vy = Vy + acc_y_world * t;
   Vz = Vz + acc_z_world * t;
 
-  high_Vx = highpassfilter(Vx_before, Vx, high_Vx);
-  high_Vy = highpassfilter(Vy_before, Vy, high_Vy);
-  high_Vz = highpassfilter(Vz_before, Vz, high_Vz);
+  //Highpassfilter(x1, x2, y1, cutoff)
+  high_Vx = highpassfilter(Vx_before, Vx, high_Vx, 0.4);
+  high_Vy = highpassfilter(Vy_before, Vy, high_Vy, 0.4);
+  high_Vz = highpassfilter(Vz_before, Vz, high_Vz, 0.4);
   
   //high pass filter for S
 
@@ -192,9 +193,9 @@ void loop(void)
   S_gps_y = S_gps_y + high_Vy * t;
   S_gps_z = S_gps_z + high_Vz * t;
 
-  high_S_gps_x = highpassfilter(S_gps_x_before, S_gps_x, high_S_gps_x);
-  high_S_gps_y = highpassfilter(S_gps_y_before, S_gps_y, high_S_gps_y);
-  high_S_gps_z = highpassfilter(S_gps_z_before, S_gps_z, high_S_gps_z);
+  high_S_gps_x = highpassfilter(S_gps_x_before, S_gps_x, high_S_gps_x, 1);
+  high_S_gps_y = highpassfilter(S_gps_y_before, S_gps_y, high_S_gps_y, 1);
+  high_S_gps_z = highpassfilter(S_gps_z_before, S_gps_z, high_S_gps_z, 1);
 
   S[0] = high_S_gps_x;
   S[1] = high_S_gps_y;
@@ -223,7 +224,13 @@ void loop(void)
     Serial.print(",");
     Serial.print(S[1]);
     Serial.print(",");
-    Serial.println(S[2]);
+    Serial.print(S[2]);
+    Serial.print(",Orientation,");
+    Serial.print(An[0]);
+    Serial.print(",");
+    Serial.print(An[1]);
+    Serial.print(",");
+    Serial.println(An[2]);
     // Serial.print("T: ");
     // Serial.println(t);
     // Serial.println(headingVel);
@@ -297,9 +304,8 @@ double lowpassfilter(double sensor, double result_before){
   return result;
 }
 
-float highpassfilter(float sensor1, float sensor2, float result_before){
+float highpassfilter(float sensor1, float sensor2, float result_before, float CUTOFF){
   //alpha = (1/(0.02*3.141592))/(1/(0.02*3.141592)+1/256)
-  float CUTOFF = 1;
   float RC = 1.0/(CUTOFF*2*3.141592);
   float alpha = RC/(RC+t);
   float result = alpha * ( result_before + sensor2 - sensor1);
