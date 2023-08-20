@@ -17,19 +17,16 @@ import threading
 import ctypes
 from ctypes import *
 import math
-i = c_double(0)
-pi = pointer(i)
 x = ""
 y = ""
 z = ""
 x_val = []
 y_val = []
 z_val = []
-pitch_val = []
-roll_val = []
-yaw_val = []
 text = ""
-
+pi = 0
+theta = 0
+psi = 0
 port = 'COM3'
 # port = '/dev/cu.usbmodem1301'
 baud = 115200
@@ -51,7 +48,7 @@ def animate(i):
                 z = text_splited[3]
                 pi = text_splited[5]  
                 theta = text_splited[6] 
-                psi = text_splited[7] 
+                psi = text_splited[7][:-1]
                 
                 print("Position : (" + x + ", " + y + ", " + z + ")")
                 print("Orientation = (" + pi + ", " + theta + ", " + psi + ")")
@@ -98,6 +95,9 @@ def animate(i):
                 plt.plot(xx[0],xx[1],xx[2], color = 'red')
                 plt.plot(yy[0],yy[1],yy[2], color = 'orange')
                 plt.plot(zz[0],zz[1],zz[2] , color = 'yellow')
+                plt.title('IMU Motion Tracking\n<Position> X: ' + text_splited[1] + ', Y:' + text_splited[2] + ', Z:' + text_splited[3]+ '\n<Orientation> Yaw:'+ text_splited[5] + '°, Roll:' + text_splited[6] + '°, Pitch:' + text_splited[7][:-1] + '°' )
+    
+                
         
         else:
             text = res.decode()[:len(res)-1]
@@ -134,6 +134,7 @@ if __name__ == "__main__":
     ax.set_ylabel('Y(t)')
     ax.set_zlabel('Z(t)')
     ax.set_title('IMU Motion Tracking')
+    
     ani = FuncAnimation(plt.gcf(), animate, interval = 10, cache_frame_data=False)
 
     plt.show()
