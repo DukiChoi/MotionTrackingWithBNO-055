@@ -16,7 +16,8 @@ double pi_before, theta_before, psi_before = 0.0;
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 10; //how often to read data from the board
 uint16_t PRINT_DELAY_MS = 100; // how often to print the data
 uint16_t printCount = 0; //counter to avoid printing every 10MS sample
-
+float alpha1 = 0.1;
+float alpha2 = 10;
 //velocity = accel*dt (dt in seconds)
 //position = 0.5*accel*dt^2
 double ACCEL_VEL_TRANSITION =  (double)(BNO055_SAMPLERATE_DELAY_MS) / 1000.0;
@@ -179,10 +180,16 @@ void loop(void)
   Vz = Vz + acc_z_world * t;
 
   //Highpassfilter(x1, x2, y1, cutoff)
-  high_Vx = highpassfilter(Vx_before, Vx, high_Vx, 0.4);
-  high_Vy = highpassfilter(Vy_before, Vy, high_Vy, 0.4);
-  high_Vz = highpassfilter(Vz_before, Vz, high_Vz, 0.4);
-  
+
+
+  high_Vx = highpassfilter(Vx_before, Vx, high_Vx, 0.5);
+  high_Vy = highpassfilter(Vy_before, Vy, high_Vy, 0.5);
+  high_Vz = highpassfilter(Vz_before, Vz, high_Vz, 0.5);
+
+  high_Vx = bandpassfilter(Vx_before, Vx, high_Vx, alpha1, alpha2);
+  high_Vy = bandpassfilter(Vy_before, Vy, high_Vy, alpha1, alpha2);
+  high_Vz = bandpassfilter(Vz_before, Vz, high_Vz, alpha1, alpha2);
+
   //high pass filter for S
 
   S_gps_x_before = S_gps_x;
@@ -193,9 +200,13 @@ void loop(void)
   S_gps_y = S_gps_y + high_Vy * t;
   S_gps_z = S_gps_z + high_Vz * t;
 
-  high_S_gps_x = highpassfilter(S_gps_x_before, S_gps_x, high_S_gps_x, 1);
-  high_S_gps_y = highpassfilter(S_gps_y_before, S_gps_y, high_S_gps_y, 1);
-  high_S_gps_z = highpassfilter(S_gps_z_before, S_gps_z, high_S_gps_z, 1);
+  high_S_gps_x = highpassfilter(S_gps_x_before, S_gps_x, high_S_gps_x, 0.5);
+  high_S_gps_y = highpassfilter(S_gps_y_before, S_gps_y, high_S_gps_y, 0.5);
+  high_S_gps_z = highpassfilter(S_gps_z_before, S_gps_z, high_S_gps_z, 0.5);
+  
+  // high_S_gps_x = bandpassfilter(S_gps_x_before, S_gps_x, high_S_gps_x, alpha1, alpha2);
+  // high_S_gps_y = bandpassfilter(S_gps_y_before, S_gps_y, high_S_gps_y, alpha1, alpha2);
+  // high_S_gps_z = bandpassfilter(S_gps_z_before, S_gps_z, high_S_gps_z, alpha1, alpha2);
 
   S[0] = high_S_gps_x;
   S[1] = high_S_gps_y;
@@ -294,25 +305,24 @@ void printEvent(sensors_event_t* event) {
 }
 
 
-double lowpassfilter(double sensor, double result_before){
-  //alpha = (1/(0.02*3.141592))/(1/(0.02*3.141592)+1/256)
-  // int alpha = 1;
-  // double result2 = alpha * ( result1 + sensor2 - sensor1);
-  double fc = 1/10;
-  double lambda = 2*3.141592*fc*t;
-  double result = lambda/(1+lambda)*sensor+1/(1+lambda)*result_before;
-  return result;
-}
-
-float highpassfilter(float sensor1, float sensor2, float result_before, float CUTOFF){
-  //alpha = (1/(0.02*3.141592))/(1/(0.02*3.141592)+1/256)
+double lowpassfilter(float sensor_before, float sensor, double result_before, float CUTOFF){
   float RC = 1.0/(CUTOFF*2*3.141592);
   float alpha = RC/(RC+t);
-  float result = alpha * ( result_before + sensor2 - sensor1);
-  // double fc = 1/10;
-  // double lambda = 2*3.141592*fc*t;
-  // double result = lambda/(1+lambda)*sensor+1/(1+lambda)*result_before;
+  float result = result_before + (alpha*(sensor - sensor_before));
   return result;
 }
 
+float highpassfilter(float sensor_before, float sensor, float result_before, float CUTOFF){
+  float RC = 1.0/(CUTOFF*2*3.141592);
+  float alpha = RC/(RC+t);
+  float result = alpha * ( result_before + sensor - sensor_before);
+  return result;
+}
 
+float bandpassfilter(float sensor_before, float sensor, float result_before, float EMA_a_low, float EMA_a_high){
+  float EMA_S_low = (EMA_a_low*sensor) + ((1-EMA_a_low)*sensor_before);  //run the EMA
+  float EMA_S_high = (EMA_a_high*sensor) + ((1-EMA_a_high)*sensor_before);
+  float highpass = sensor - EMA_S_low;     //find the high-pass as before (for comparison)
+  float bandpass = EMA_S_high - EMA_S_low;      //find the band-pass
+  return bandpass;
+}

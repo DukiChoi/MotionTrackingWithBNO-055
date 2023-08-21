@@ -63,7 +63,7 @@ def animate(i):
                 drawplots()
                 plt.plot(x_val[len(x_val)-11: len(x_val)-1], y_val[len(y_val)-11: len(y_val)-1], z_val[len(z_val)-11: len(z_val)-1], color = 'g', alpha = 0.6)
                 
-                
+                plt.plot
                 
                 xx = [[x_val[len(x_val)-1], x_val[len(x_val)-1] + 0.1, x_val[len(x_val)-1] + 0.2],
                       [y_val[len(y_val)-1], y_val[len(y_val)-1], y_val[len(y_val)-1]],
@@ -79,23 +79,40 @@ def animate(i):
                 #       [math.cos(pi)*math.sin(psi)+math.sin(pi)*math.sin(theta)*math.cos(psi), math.cos(pi)*math.cos(psi) - math.sin(pi)*math.sin(theta)*math.sin(psi), - math.sin(pi)*math.cos(theta)],
                 #       [math.sin(pi)*math.sin(psi)-math.cos(pi)*math.sin(theta)*math.cos(psi), math.sin(pi)*math.cos(psi) + math.cos(pi)*math.sin(theta)*math.sin(psi), math.cos(pi)*math.cos(theta)]]
                 
+                #이게 최종
                 rotation_matrix = [[-math.cos(theta) * math.cos(pi), -math.sin(psi) * math.sin(theta) * math.cos(-pi) + math.cos(psi) * math.sin(-pi), math.cos(psi) * math.sin(theta) * math.cos(-pi) + math.sin(psi) * math.sin(-pi)],
                                     [-math.cos(theta) * math.sin(-pi), - math.sin(psi) * math.sin(theta) * math.sin(-pi) - math.cos(psi) * math.cos(-pi), math.cos(psi) * math.sin(theta) * math.sin(-pi) - math.sin(psi) * math.cos(-pi)],
                                     [math.sin(theta), -math.sin(psi) * math.cos(theta), math.cos(psi) * math.cos(theta)]]
+                
+                # rotation_matrix = [[1,0,0],
+                #                    [0,1,0],
+                #                    [0,0,1]]
                 
                 # rotation_matrix = [[-math.sin(psi)*math.sin(pi) + math.cos(theta)*math.cos(pi)*math.cos(psi), math.sin(psi)*math.cos(pi) + math.cos(theta)*math.sin(pi)*math.cos(psi), -math.cos(psi)*math.sin(theta)],
                 #                    [-math.cos(psi)*math.sin(pi) - math.cos(theta)*math.cos(pi)*math.sin(psi), math.cos(psi)*math.cos(theta) - math.cos(theta)*math.sin(pi)*math.sin(psi), math.sin(psi)*math.sin(theta)],
                 #                    [math.sin(theta)*math.cos(pi), math.sin(theta)*math.sin(pi), math.cos(theta)]]
                 
                 rotation_matrix = np.array(rotation_matrix)
-                xx = rotation_matrix.dot(np.array(xx))
-                yy = rotation_matrix.dot(np.array(yy))
-                zz = rotation_matrix.dot(np.array(zz))
-
-                plt.plot(xx[0],xx[1],xx[2], color = 'red')
-                plt.plot(yy[0],yy[1],yy[2], color = 'orange')
-                plt.plot(zz[0],zz[1],zz[2] , color = 'yellow')
-                plt.title('IMU Motion Tracking\n<Position> X: ' + text_splited[1] + ', Y:' + text_splited[2] + ', Z:' + text_splited[3]+ '\n<Orientation> Yaw:'+ text_splited[5] + '°, Roll:' + text_splited[6] + '°, Pitch:' + text_splited[7][:-1] + '°' )
+                xx2 = rotation_matrix.dot(np.array(xx))
+                yy2 = rotation_matrix.dot(np.array(yy))
+                zz2 = rotation_matrix.dot(np.array(zz))
+                
+                #이렇게 평행이동을 해주어야 원점에서의 회전이 아니게됨.
+                xx2[0] = xx2[0] + xx[0][0] - xx2[0][0]
+                xx2[1] = xx2[1] + xx[1][0] - xx2[1][0]
+                xx2[2] = xx2[2] + xx[2][0] - xx2[2][0]
+                yy2[0] = yy2[0] + yy[0][0] - yy2[0][0]
+                yy2[1] = yy2[1] + yy[1][0] - yy2[1][0]
+                yy2[2] = yy2[2] + yy[2][0] - yy2[2][0]
+                zz2[0] = zz2[0] + zz[0][0] - zz2[0][0]
+                zz2[1] = zz2[1] + zz[1][0] - zz2[1][0]
+                zz2[2] = zz2[2] + zz[2][0] - zz2[2][0]
+                
+                
+                plt.plot(xx2[0],xx2[1],xx2[2], color = 'red')
+                plt.plot(yy2[0],yy2[1],yy2[2], color = 'orange')
+                plt.plot(zz2[0],zz2[1],zz2[2] , color = 'yellow')
+                plt.title('IMU Motion Tracking\n<Position> X: ' + text_splited[1] + ', Y:' + text_splited[2] + ', Z:' + text_splited[3]+ '\n<Orientation> Yaw:'+ text_splited[5] + '°, Pitch:' + text_splited[6] + '°, Roll:' + text_splited[7][:-1] + '°')
     
                 
         
