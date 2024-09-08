@@ -1,4 +1,4 @@
-# Making a Graph Using TinyEKF DLL and Motion Tracking With BNO-055
+# Making a Graph Using TinyEKF DLL and Motion Tracking With WT931 and BNO-055
 
 1) Making a Graph Using TinyEKF DLL 
   * This uses DLL with python ctypes module to draw a 3D graph.
@@ -8,6 +8,8 @@ https://github.com/simondlevy/TinyEKF
   * Python file(graph_maker.py) includes how to use ctypes module in order to use the function in DLL file.
   * Graph_maker.py first makes 3 arrays(a, w, h), after reading txt files, which will be the parameters for the function I call later.
   * After the function call it gets an array s which is the position of the sensor, and draws a 3D graph expressing the position.
+
+![Drawing a square with WT931 - Mon Mar 28 17 53 47 2022](https://github.com/user-attachments/assets/64da5da4-dbf1-49f6-95b0-c85cb27b6435)
 
 2) Motion Tracking With BNO-055
   * I adopted Arduino and IMU sensors (BNO-055) to sense 9-axis data in real-time.  In the Arduino code I used a high-pass filter to remove the drift caused when       calculating Velocity and Position.
