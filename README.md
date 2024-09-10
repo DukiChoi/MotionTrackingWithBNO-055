@@ -20,3 +20,8 @@ https://github.com/simondlevy/TinyEKF
 ![Drawing Circle](https://github.com/DukiChoi/MakeGraphUsingTinyEKFDLL/assets/77292270/57d0deff-4fa4-40f8-95e2-6b4349eedd99)
 
 https://github.com/DukiChoi/MakeGraphUsingTinyEKFDLL/assets/77292270/4cb8e434-2782-4da7-b767-0f3524c3f8c8
+
+## License
+
+This project is licensed under the MIT License. You are free to use, modify, and distribute this software under the conditions of the MIT License.
+For more details, please refer to the [LICENSE](./LICENSE) file.
